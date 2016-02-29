@@ -10,7 +10,8 @@ class HistDataPersister():
 
     def persist(self):
         resp = self.hist_data_reader.read_message()
-        lists = converter.convert(resp)
+        lists = converter.convert(resp.value)
         for data in lists:
+            print data
             self.es_writer.create(data)
         LOG.info('persist finished!')

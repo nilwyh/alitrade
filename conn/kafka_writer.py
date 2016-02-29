@@ -11,7 +11,7 @@ class KafkaWriter():
     def write_message(self, topic, key, value):
         # produce keyed messages to enable hashed partitioning
         a = self.producer.send(topic, key =key, value=value)
-        b=a.get(timeout=10)
+        b=a.get(timeout=2)
 
         #
         # # Asynchronous by default

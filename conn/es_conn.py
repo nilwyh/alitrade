@@ -59,6 +59,30 @@ class ESConnection(object):
             LOG.debug('Msg posted with response code: %s' % res.status_code)
             return res.status_code
 
+    def update(self, obj):
+        LOG.debug('Prepare to update obj.')
+        if self.drop_data:
+            return
+        else:
+            # figure out id situation
+            _id = ''
+            if self.id_field:
+                _id = obj.get(self.id_field)
+                if not _id:
+                    LOG.debug('Msg does not have required id field %s' %
+                              self.id_field)
+                    return 400
+            # index may change over the time, it has to be called for each
+            # request
+
+            path = '%s%s%s/%s/%s' % (self.uri, self.index_prefix,
+                                     self.index, self.doc_type, _id)
+            msg = json.dumps(obj)
+            res = requests.put(path, data=msg)
+            LOG.debug('Msg post target=%s' % path)
+            LOG.debug('Msg posted with response code: %s' % res.status_code)
+            return res.status_code
+
     # def get_messages(self, cond, q_string=""):
     #     LOG.debug('Prepare to get messages.')
     #     if cond:

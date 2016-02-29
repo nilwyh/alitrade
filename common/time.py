@@ -1,11 +1,18 @@
 import datetime
 
-class ali_time():
+class AliTime():
     def __init__(self, date):
-        self.date = datetime.datetime.strptime(date, "%Y%m%d %H:%M:%S")
+        try:
+            self.date = datetime.datetime.strptime(date, "%Y%m%d %H:%M:%S")
+        except:
+            self.date = datetime.datetime.fromtimestamp(date/1000.0)
+
 
     def get_date(self):
         return self.date.strftime("%Y%m%d %H:%M:%S")
+
+    def get_date_day(self):
+        return self.date.strftime("%Y/%m/%d")
 
     def increase_day(self):
         self.date = self.date + datetime.timedelta(days=1)
