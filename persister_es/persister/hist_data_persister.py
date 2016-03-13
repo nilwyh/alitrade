@@ -1,6 +1,6 @@
 from conn import kafka_reader
 from conn import es_conn
-from ali_miao.converter import hist_data_converter as converter
+from persister_es.converter import hist_data_converter as converter
 from common import log as LOG
 
 class HistDataPersister():

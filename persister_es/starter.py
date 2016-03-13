@@ -1,5 +1,5 @@
 
-from ali_miao.persister import hist_data_persister
+from persister_es.persister import hist_data_persister
 
 def run():
     hist = hist_data_persister.HistDataPersister()
