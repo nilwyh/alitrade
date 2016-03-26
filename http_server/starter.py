@@ -1,7 +1,8 @@
-
-from common import time
 import ujson as json
-from conn import kafka_writer
+
+from common.conn import kafka_writer
+from common.utils import time
+
 
 def run():
     writer = kafka_writer.KafkaWriter()

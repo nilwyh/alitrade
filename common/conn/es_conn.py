@@ -14,7 +14,8 @@
 
 import requests
 import ujson as json
-from common import log as LOG
+from common.utils import log
+
 
 class ESConnection(object):
 
@@ -30,13 +31,19 @@ class ESConnection(object):
         self.index = '_v1'
         self.id_field = 'id'
 
-        self.search_path = '%s%s*/%s/_search' % (self.uri,
+        self.search_path = '%s%s%s/%s/_search' % (self.uri,
                                                  self.index_prefix,
+                                                 self.index,
                                                  self.doc_type)
-        LOG.debug('ElasticSearch Connection initialized successfully!')
+        self.doc_path = '%s%s%s/%s/' % (self.uri,
+                                                 self.index_prefix,
+                                                 self.index,
+                                                 self.doc_type)
+
+        log.debug('ElasticSearch Connection initialized successfully!')
 
     def create(self, obj):
-        LOG.debug('Prepare to create obj.')
+        log.debug('Prepare to create obj.')
         if self.drop_data:
             return
         else:
@@ -45,7 +52,7 @@ class ESConnection(object):
             if self.id_field:
                 _id = obj.get(self.id_field)
                 if not _id:
-                    LOG.debug('Msg does not have required id field %s' %
+                    log.debug('Msg does not have required id field %s' %
                               self.id_field)
                     return 400
             # index may change over the time, it has to be called for each
@@ -55,12 +62,12 @@ class ESConnection(object):
                                      self.index, self.doc_type, _id, '_create')
             msg = json.dumps(obj)
             res = requests.post(path, data=msg)
-            LOG.debug('Msg post target=%s' % path)
-            LOG.debug('Msg posted with response code: %s' % res.status_code)
+            log.debug('Msg post target=%s' % path)
+            log.debug('Msg posted with response code: %s' % res.status_code)
             return res.status_code
 
     def update(self, obj):
-        LOG.debug('Prepare to update obj.')
+        log.debug('Prepare to update obj.')
         if self.drop_data:
             return
         else:
@@ -69,7 +76,7 @@ class ESConnection(object):
             if self.id_field:
                 _id = obj.get(self.id_field)
                 if not _id:
-                    LOG.debug('Msg does not have required id field %s' %
+                    log.debug('Msg does not have required id field %s' %
                               self.id_field)
                     return 400
             # index may change over the time, it has to be called for each
@@ -79,25 +86,25 @@ class ESConnection(object):
                                      self.index, self.doc_type, _id)
             msg = json.dumps(obj)
             res = requests.put(path, data=msg)
-            LOG.debug('Msg post target=%s' % path)
-            LOG.debug('Msg posted with response code: %s' % res.status_code)
+            log.debug('Msg post target=%s' % path)
+            log.debug('Msg posted with response code: %s' % res.status_code)
             return res.status_code
 
-    # def get_messages(self, cond, q_string=""):
-    #     LOG.debug('Prepare to get messages.')
-    #     if cond:
-    #         data = json.dumps(cond)
-    #     else:
-    #         data = {}
-    #     return requests.post(self.search_path + "?" + q_string, data=data)
-    #
-    # def get_message_by_id(self, id):
-    #     LOG.debug('Prepare to get messages by id.')
-    #     path = self.search_path + '?q=_id:' + id
-    #     LOG.debug('Search path:' + path)
-    #     res = requests.get(path)
-    #     LOG.debug('Msg get with response code: %s' % res.status_code)
-    #     return res
+    def get_messages(self, cond, q_string=""):
+        log.debug('Prepare to get messages.')
+        if cond:
+            data = json.dumps(cond)
+        else:
+            data = {}
+        return requests.post(self.search_path + "?" + q_string, data=data)
+
+    def get_message_by_id(self, id):
+        log.debug('Prepare to get messages by id.')
+        path = self.doc_path + id
+        log.debug('Search path:' + path)
+        res = requests.get(path)
+        log.debug('Msg get with response code: %s' % res.status_code)
+        return res
     #
     # def post_messages(self, msg, id):
     #     LOG.debug('Prepare to post messages.')

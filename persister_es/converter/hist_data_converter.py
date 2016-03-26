@@ -1,5 +1,7 @@
 import ujson as json
-from common import time
+
+from common.utils import time
+
 
 def convert(message):
     print message

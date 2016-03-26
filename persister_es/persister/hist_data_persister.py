@@ -1,7 +1,8 @@
-from conn import kafka_reader
-from conn import es_conn
+from common.conn import kafka_reader
+from common.utils import log
+from common.conn import es_conn
 from persister_es.converter import hist_data_converter as converter
-from common import log as LOG
+
 
 class HistDataPersister():
     def __init__(self):
@@ -14,4 +15,4 @@ class HistDataPersister():
         for data in lists:
             print data
             self.es_writer.create(data)
-        LOG.info('persist finished!')
+        log.info('persist finished!')
