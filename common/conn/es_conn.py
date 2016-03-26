@@ -35,6 +35,10 @@ class ESConnection(object):
                                                  self.index_prefix,
                                                  self.index,
                                                  self.doc_type)
+        self.scan_path = '%s%s%s/%s/_search?search_type=scan&scroll=1m' % (self.uri,
+                                                 self.index_prefix,
+                                                 self.index,
+                                                 self.doc_type)
         self.doc_path = '%s%s%s/%s/' % (self.uri,
                                                  self.index_prefix,
                                                  self.index,
@@ -90,13 +94,13 @@ class ESConnection(object):
             log.debug('Msg posted with response code: %s' % res.status_code)
             return res.status_code
 
-    def get_messages(self, cond, q_string=""):
+    def get_messages(self, cond):
         log.debug('Prepare to get messages.')
         if cond:
             data = json.dumps(cond)
         else:
             data = {}
-        return requests.post(self.search_path + "?" + q_string, data=data)
+        return requests.post(self.search_path, data=data)
 
     def get_message_by_id(self, id):
         log.debug('Prepare to get messages by id.')
@@ -105,6 +109,15 @@ class ESConnection(object):
         res = requests.get(path)
         log.debug('Msg get with response code: %s' % res.status_code)
         return res
+
+    # def scan_messages(self, cond):
+    #     log.debug('Prepare to scan messages.')
+    #     if cond:
+    #         data = json.dumps(cond)
+    #     else:
+    #         data = {}
+    #     return requests.post(self.scan_path, data=data)
+
     #
     # def post_messages(self, msg, id):
     #     LOG.debug('Prepare to post messages.')

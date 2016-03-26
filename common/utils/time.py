@@ -19,5 +19,4 @@ class AliTime():
 
     def before(self, end_date):
         end = datetime.datetime.strptime(end_date, "%Y%m%d %H:%M:%S")
-        return self.date <= end
 
